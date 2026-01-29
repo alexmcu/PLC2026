@@ -1,9 +1,15 @@
---create inpFunc
-inpFunc = [1..5] 
+-- Create list of ints from a to b
+inpFunc :: Int -> Int -> [Int]
+inpFunc a b = [a..b]
 
---Define applicatorFunc
-applicatorFunc inpFunc s = if s=='s' then sum inpFunc else (sum inpFunc)/5  
+-- Takes a function as an argument and returns either sum or average (as Double)
+applicatorFunc :: (Int -> Int -> [Int]) -> Int -> Int -> Char -> Double
+applicatorFunc f a b s =
+  if s == 's'
+    then fromIntegral (sum (f a b))
+    else fromIntegral (sum (f a b)) / fromIntegral (b - a + 1)
 
+main :: IO ()
 main = do
-    let result = applicatorFunc inpFunc 'a' --Call applicatorFunc with inpFunc and 'a' as args
-    putStrLn("sum = " ++ show(result))
+  let result = applicatorFunc inpFunc 1 10 's'
+  putStrLn ("sum = " ++ show result)
