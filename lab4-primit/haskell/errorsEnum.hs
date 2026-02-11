@@ -5,10 +5,10 @@ import System.IO (hSetBuffering, stdout, BufferMode(..))
 main =
     do
     initialiseIO
-    putStrLn ("known errors = " ++ show allErrors)
-    error <- getElement "error"
-    putStrLn (show error ++ " results in: " ++ show (error2Result error))
-    
+    putStrLn ("known results = " ++ show allResults)
+    result <- getElement "result"
+    putStrLn (show result ++ " results from: " ++ show (result2Error result))
+
 initialiseIO =
     do
     hSetBuffering stdout NoBuffering
@@ -27,13 +27,20 @@ data Result = Zero | Infinity | ABitDifferent | VeryDifferent
               Bounded, -- default minBound and maxBound
               Enum) -- default sequencing (needed for .. ranges)
 
-allErrors :: [Error] -- ie it is a list of PL elements
+allErrors :: [Error]
 allErrors = [minBound .. maxBound]
 
-error2Result FP_Rounding = ABitDifferent
-error2Result FP_Overflow = Infinity
+allResults :: [Result]
+allResults = [minBound .. maxBound]
+
+error2Result FP_Rounding  = ABitDifferent
+error2Result FP_Overflow  = Infinity
 error2Result FP_Underflow = Zero
 error2Result Int_Overflow = VeryDifferent
+
+-- NEW: reverse mapping (Result -> Error)
+result2Error :: Result -> Error
+result2Error r = head [e | e <- allErrors, error2Result e == r]
 
 -- The code below should not be changed and does not need to be fully understood.
 
@@ -60,7 +67,5 @@ parseElement line =
     case reads line of
         [] -> -- no valid interpretation of the line as an element ([] = the empty list)
             Nothing
-        -- [pattern 2:]
         ((e,_) : _) -> -- found at least one interpretation, call it "e"
-            Just e -- type of e is derived from context
-                   -- where getElement is used
+            Just e

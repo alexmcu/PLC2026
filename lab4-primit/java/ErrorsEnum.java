@@ -6,13 +6,13 @@ public class ErrorsEnum
     enum Error { FP_ROUNDING, FP_OVERFLOW, FP_UNDERFLOW, INT_OVERFLOW }
 
     enum Result { A_BIT_DIFFERENT, INFINITY, ZERO, VERY_DIFFERENT }
-    
+
     private static <E extends Enum<E>> E getEnumElement(String elementTypeName, Class<E> elementType)
     {
         boolean haveResult = false;
         E result = null;
         Scanner stdin = new Scanner(System.in);
-        
+
         while ( ! haveResult )
         {
             System.out.print("Input " + elementTypeName + ": ");
@@ -27,15 +27,15 @@ public class ErrorsEnum
                 stdin.nextLine(); // skip the invalid input
             }
         }
-        
+
         stdin.close();
         return result;
     }
-  
+
     private static Result error2Result(Error e)
     {
         Result result = null;
-        
+
         switch (e) {
         case FP_ROUNDING:
             result = Result.A_BIT_DIFFERENT;
@@ -50,20 +50,41 @@ public class ErrorsEnum
             result = Result.VERY_DIFFERENT;
             break;
         }
-        
+
         return result;
+    }
+
+    // NEW: reverse mapping (Result -> Error)
+    private static Error result2Error(Result r)
+    {
+        Error found = null;
+
+        for (Error e : EnumSet.allOf(Error.class))
+        {
+            if (error2Result(e) == r)
+            {
+                found = e;
+                break;
+            }
+        }
+
+        return found;
     }
 
     public static void main(String[] args)
     {
-        System.out.print("Known errors = ");
-        for (Error e : EnumSet.allOf(Error.class)) 
+        // UPDATED: print known results (not errors)
+        System.out.print("Known results = ");
+        for (Result r : EnumSet.allOf(Result.class))
         {
-            System.out.print(e + " ");
+            System.out.print(r + " ");
         }
         System.out.println();
-        
-        Error e = getEnumElement("error", Error.class);
-        System.out.println(e + " results in: " + error2Result(e));
+
+        // UPDATED: input a result (not an error)
+        Result r = getEnumElement("result", Result.class);
+
+        // UPDATED: output which error produced that result
+        System.out.println(r + " results from: " + result2Error(r));
     }
 }
