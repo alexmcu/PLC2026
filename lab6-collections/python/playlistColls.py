@@ -17,6 +17,7 @@ class Piece:
         l = self.length_secs
         assert 0 < l and l < 36000
 
+
 class Product:
     def __init__(self, name, brand):
         self.name = name
@@ -31,6 +32,7 @@ class Product:
         # do some dynamic type checking:
         assert self.name.__class__ == str
         assert self.brand.__class__ == str
+
 
 class Advert:
     def __init__(self, product, length_secs): # constructor
@@ -49,6 +51,7 @@ class Advert:
         l = self.length_secs
         assert 0 < l and l < 120
 
+
 piece1 = Piece("Moonlight", "C. Arrau", 17*60+26.0)
 piece2 = Piece("Pathetique", "D. Barenboim", 16*60+49.0)
 advert1 = Advert(Product("Bounty", "Mars"), 15.0)
@@ -58,7 +61,9 @@ things = [111, piece1, "hello", advert1, [piece2]]
 
 print("things = %s" % things)
 
-piecesFromThings = "todo" #TASK 6.2-c -- replace "todo" by a list comprehension
+# TASK 6.2-c
+piecesFromThings = [x for x in things if x.__class__ == Piece] + \
+                   [x for sub in things if sub.__class__ == list for x in sub if x.__class__ == Piece]
 
 print("piecesFromThings = %s" % piecesFromThings)
 
@@ -74,12 +79,13 @@ playlist1noAds = [ item for item in playlist1 if item.__class__ != Advert ]
 
 print("playlist1noAds = %s" % playlist1noAds)
 
-shortItemLenghts1 = "todo" # TASK 6.2-b -- replace "todo" by a list comprehension
+# TASK 6.2-b
+shortItemLenghts1 = [item.length_secs for item in playlist1 if item.length_secs < 20.0]
 
 print("shortItemLenghts1 = %s" % shortItemLenghts1)
 
 # empty line
-print
+print()
 
 # heterogeneous dictionary:
 pieceToScore = { piece1 : 10, piece2 : "dunno" }
